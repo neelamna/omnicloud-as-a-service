@@ -1,0 +1,11 @@
+# Default values for nmstate.
+# This chart's only job is to create the NMState custom resource that tells
+# the kubernetes-nmstate-operator (installed via the subscription declared in
+# values-devops.yaml) to deploy its node-level handlers (DaemonSet, webhook,
+# metrics). The operator subscription alone only installs the operator - this
+# CR is what activates declarative node network management on the cluster.
+
+nmstate:
+  enabled: true
+  name: nmstate
+  namespace: openshift-nmstate

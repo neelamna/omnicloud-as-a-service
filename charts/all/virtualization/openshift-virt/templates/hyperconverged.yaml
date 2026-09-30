@@ -1,0 +1,23 @@
+{{- if .Values.hyperconverged.enabled }}
+apiVersion: hco.kubevirt.io/v1beta1
+kind: HyperConverged
+metadata:
+  name: {{ .Values.hyperconverged.name }}
+  namespace: {{ .Values.hyperconverged.namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: openshift-virt-cartridge
+spec:
+  {{- if .Values.hyperconverged.infra }}
+  infra:
+    {{- toYaml .Values.hyperconverged.infra | nindent 4 }}
+  {{- end }}
+  {{- if .Values.hyperconverged.workloads }}
+  workloads:
+    {{- toYaml .Values.hyperconverged.workloads | nindent 4 }}
+  {{- end }}
+  {{- if .Values.hyperconverged.featureGates }}
+  featureGates:
+    {{- toYaml .Values.hyperconverged.featureGates | nindent 4 }}
+  {{- end }}
+{{- end }}

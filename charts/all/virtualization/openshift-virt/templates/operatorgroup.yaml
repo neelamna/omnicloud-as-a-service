@@ -1,0 +1,10 @@
+{{- if .Values.hyperconverged.enabled }}
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-cnv-group
+  namespace: {{ .Values.hyperconverged.namespace }}
+spec:
+  targetNamespaces:
+    - {{ .Values.hyperconverged.namespace }}
+{{- end }}

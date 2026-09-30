@@ -4,6 +4,8 @@ clusterGroup:
   namespaces:
     - golang-external-secrets
     - devops
+    - openshift-cnv  # ADDED: namespace for the OpenShift Virtualization (CNV) operator
+    - openshift-nmstate  # ADDED: namespace for the Kubernetes NMState operator
   # The only subscription on spokes is gitops which gets managed by ACM
   subscriptions:
     clair:
@@ -22,9 +24,23 @@ clusterGroup:
       channel: latest
       name: openshift-pipelines-operator-rh
       source: redhat-operators
+    # ADDED: OpenShift Virtualization cartridge - installs the operator that provides KubeVirt/CNV
+    kubevirt-hyperconverged:
+      channel: stable
+      name: kubevirt-hyperconverged
+      namespace: openshift-cnv
+      source: redhat-operators
+    # ADDED: dependent operator for OpenShift Virtualization - provides declarative,
+    # state-driven node networking (bridges/VLANs/bonds) required for VM secondary networks
+    kubernetes-nmstate-operator:
+      channel: stable
+      name: kubernetes-nmstate-operator
+      namespace: openshift-nmstate
+      source: redhat-operators
   argoProjects:
     - eso
     - devops
+    - virtualization  # ADDED: dedicated ArgoCD project for the OpenShift Virtualization cartridge (covers CNV + its NMState dependency)
   applications:
     golang-external-secrets:
       name: golang-external-secrets
@@ -62,6 +78,20 @@ clusterGroup:
       namespace: devops
       argoProject: devops
       path: charts/all/devops-tools/selenium-node-firefox
+    # ADDED: OpenShift Virtualization cartridge - creates the HyperConverged CR
+    # once the kubevirt-hyperconverged subscription above has installed the operator
+    openshift-virt:
+      name: openshift-virt
+      namespace: openshift-cnv
+      argoProject: virtualization
+      path: charts/all/virtualization/openshift-virt
+    # ADDED: creates the NMState CR once the kubernetes-nmstate-operator subscription
+    # above has installed the operator - this is what activates node network management
+    nmstate:
+      name: nmstate
+      namespace: openshift-nmstate
+      argoProject: virtualization
+      path: charts/all/virtualization/nmstate
   imperative:
     # NOTE: We *must* use lists and not hashes. As hashes lose ordering once parsed by helm
     # The default schedule is every 10 minutes: imperative.schedule

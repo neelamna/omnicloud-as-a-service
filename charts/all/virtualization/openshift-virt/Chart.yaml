@@ -1,0 +1,6 @@
+apiVersion: v2
+name: openshift-virt
+description: A Helm chart that enables OpenShift Virtualization (CNV) by creating the HyperConverged custom resource once the kubevirt-hyperconverged operator subscription (declared in the clusterGroup values file) has installed the operator.
+type: application
+version: 0.1.0
+appVersion: "4.19.0"
