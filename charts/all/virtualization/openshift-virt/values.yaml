@@ -1,0 +1,14 @@
+# Default values for openshift-virt.
+# This chart's only job is to create the HyperConverged custom resource that
+# tells the kubevirt-hyperconverged operator (installed via the subscription
+# declared in values-virtualization.yaml) to actually stand up OpenShift
+# Virtualization. The operator subscription alone only installs the operator -
+# this CR is what enables the feature on the cluster.
+
+hyperconverged:
+  enabled: true
+  name: kubevirt-hyperconverged
+  namespace: openshift-cnv
+  infra: {}
+  workloads: {}
+  featureGates: []

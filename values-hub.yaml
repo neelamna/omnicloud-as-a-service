@@ -85,3 +85,17 @@ clusterGroup:
       helmOverrides:
         - name: clusterGroup.isHubCluster
           value: false
+    # ADDED: registers the standalone OpenShift Virtualization cartridge
+    # (values-virtualization.yaml) as a second, independently selectable
+    # clusterGroup - a cluster imported with clusterGroup=virtualization
+    # gets OpenShift Virtualization + NMState, not the DevOps toolchain.
+    # It deploys side-by-side with the devops cartridge above; selecting
+    # one does not require or exclude the other.
+    virtualizationRegion:
+      name: virtualization
+      acmlabels:
+        - name: clusterGroup
+          value: virtualization
+      helmOverrides:
+        - name: clusterGroup.isHubCluster
+          value: false

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nmstate
+description: A Helm chart that activates the Kubernetes NMState operator by creating the NMState custom resource, once the kubernetes-nmstate-operator subscription (declared in the clusterGroup values file) has installed the operator. NMState provides declarative, state-driven node networking (bridges, bonds, VLANs) and is a dependent operator for OpenShift Virtualization secondary/VM networking.
+type: application
+version: 0.1.0
+appVersion: "4.19.0"

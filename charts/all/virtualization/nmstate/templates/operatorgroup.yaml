@@ -1,0 +1,10 @@
+{{- if .Values.nmstate.enabled }}
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-nmstate-group
+  namespace: {{ .Values.nmstate.namespace }}
+spec:
+  targetNamespaces:
+    - {{ .Values.nmstate.namespace }}
+{{- end }}

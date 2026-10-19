@@ -1,0 +1,53 @@
+clusterGroup:
+  name: virtualization
+  isHubCluster: false
+  namespaces:
+    - golang-external-secrets
+    - openshift-cnv
+    - openshift-nmstate
+  # The only subscription on spokes is gitops which gets managed by ACM
+  subscriptions:
+    # Runs VMs as first-class OpenShift workloads on KVM.
+    kubevirt-hyperconverged:
+      channel: stable
+      name: kubevirt-hyperconverged
+      namespace: openshift-cnv
+      source: redhat-operators
+    # Dependent operator for OpenShift Virtualization - provides declarative,
+    # state-driven node networking (bridges/VLANs/bonds) required for VM secondary networks
+    kubernetes-nmstate-operator:
+      channel: stable
+      name: kubernetes-nmstate-operator
+      namespace: openshift-nmstate
+      source: redhat-operators
+  argoProjects:
+    - eso
+    - virtualization
+  applications:
+    golang-external-secrets:
+      name: golang-external-secrets
+      namespace: golang-external-secrets
+      argoProject: eso
+      chart: golang-external-secrets
+      chartVersion: 0.1.*
+    # Creates the HyperConverged CR once the kubevirt-hyperconverged subscription
+    # above has installed the operator - this is what activates OpenShift Virtualization
+    openshift-virt:
+      name: openshift-virt
+      namespace: openshift-cnv
+      argoProject: virtualization
+      path: charts/all/virtualization/openshift-virt
+    # Creates the NMState CR once the kubernetes-nmstate-operator subscription
+    # above has installed the operator - this is what activates node network management
+    nmstate:
+      name: nmstate
+      namespace: openshift-nmstate
+      argoProject: virtualization
+      path: charts/all/virtualization/nmstate
+  imperative:
+    jobs:
+      - name: hello-world
+        playbook: rhvp.cluster_utils.hello_world
+        timeout: 234
+  sharedValueFiles:
+    - '/overrides/values-{{ $.Values.global.clusterPlatform }}.yaml'
